@@ -19,6 +19,7 @@ public class Login {
     }
 
     public ResultSet wyszukaj(String tytul,String imie,String nazwisko){
+        if(!tytul.contains("czytelnik") || !imie.contains("czytelnik") || !nazwisko.contains("czytelnik")){
         try{
             String sql="SELECT Tytuł,Imie,Nazwisko,sum(czyWyporzyczona=0) as 'Dostępne' FROM książki left join tytuł \n" +
                     "on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor";
@@ -41,7 +42,7 @@ public class Login {
             return r;
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }}
         return null;
     }
 

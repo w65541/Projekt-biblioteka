@@ -28,7 +28,7 @@ public class Main {
         while (resultSet.next()){
             System.out.println(resultSet.getString("imie"));
         }
-        Path directory=Paths.get("C:\\Users\\HP\\Documents\\Projekt biblioteka\\Biblioteka");
+        Path directory=Paths.get("C:\\Users\\HP\\Documents\\Projekt biblioteka\\Projekt-biblioteka\\Biblioteka");
         Path file=directory.resolve("test.csv");
             Path file2=directory.resolve("test2.csv");
         //dodajZCSV(connection,file);
@@ -36,6 +36,8 @@ public class Main {
     user.czyDostepna("potop");
     user.wyporzyczoneKsiazki(14);
     System.out.println("".isBlank());
+    Ksiazka ks=new Ksiazka(connection,3);
+            System.out.println(ks.toString());
 //zapiszDoCSV( user.wyszukaj("","","sienkiew"), file2);
             zapiszDoCSV( admin.inwentarz(), file2);
             Ksiazka k=new Ksiazka(connection,"Potop","Henryk","Sienkiewicz");

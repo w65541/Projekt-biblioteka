@@ -14,7 +14,6 @@ public class Ksiazka extends Baza {
         this.imie = imie;
         this.nazwisko = nazwisko;
         try {
-            s=c.createStatement();
             resultSet=s.executeQuery("select id from biblioteka.autor where imie='"+imie+"' and nazwisko='"+nazwisko+"'");
             if(resultSet.next()) idA=resultSet.getInt("id");
             resultSet.close();
@@ -31,6 +30,20 @@ public class Ksiazka extends Baza {
     public Ksiazka(Connection connection, int idK) {
         super(connection);
         this.idK = idK;
+        try {
+            resultSet=s.executeQuery("SELECT Tytuł,Imie,Nazwisko,idTytuł,idAutor FROM książki left join tytuł  on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor");
+            if(resultSet.next()) {
+                idA=resultSet.getInt("idAutor");
+                idT=resultSet.getInt("idTytuł");
+                imie=resultSet.getString("imie");
+                nazwisko=resultSet.getString("nazwisko");
+                tytul=resultSet.getString("tytuł");
+            }
+            resultSet.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public Ksiazka(Connection connection, String tytul) {

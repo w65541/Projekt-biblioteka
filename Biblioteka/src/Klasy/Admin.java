@@ -238,7 +238,7 @@ public class Admin extends Login{
                 s.execute("UPDATE `biblioteka`.`wyporzyczenia`\n" +
                         "SET\n" +
                         "`dataOddania` = now()\n" +
-                        "WHERE `idKsiążki` = "+idK+"and idCzytelnik="+idC);
+                        "WHERE `idKsiążki` = "+idK+" and idCzytelnik="+idC);
                 zmianaStanuKsiazki(idK);
             }
         }catch (Exception e){

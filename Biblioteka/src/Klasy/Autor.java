@@ -58,7 +58,37 @@ public class Autor extends Baza{
         }
         return null;
     }
+    public void setId(int id) {
+        try {
+            s.execute("UPDATE `biblioteka`.`autor` SET `id` = "+id+" WHERE `id` ="+getId());
+            this.id=id;
 
+        }catch(Exception e){
+
+            e.printStackTrace();
+        }
+    }
+
+    public void setImie(String imie) {
+        try {
+            s.execute("UPDATE `biblioteka`.`autor` SET `imie` = '"+imie+"' WHERE `id` ="+getId());
+            this.imie=imie;
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+        }
+    }
+    public void setIdK(String nazwisko) {
+        try {
+            s.execute("UPDATE `biblioteka`.`autor` SET `nazwisko` = '"+nazwisko+"' WHERE `id` ="+getId());
+            this.nazwisko=nazwisko;
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+        }
+    }
     @Override
     public String toString() {
         return "Autor{" +

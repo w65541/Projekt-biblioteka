@@ -31,7 +31,7 @@ public class Ksiazka extends Baza {
         super(connection);
         this.idK = idK;
         try {
-            resultSet=s.executeQuery("SELECT Tytuł,Imie,Nazwisko,idTytuł,idAutor FROM książki left join tytuł  on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor");
+            resultSet=s.executeQuery("SELECT Tytuł,Imie,Nazwisko,idTytuł,idAutor FROM książki left join tytuł  on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor where książki.id="+idK);
             if(resultSet.next()) {
                 idA=resultSet.getInt("idAutor");
                 idT=resultSet.getInt("idTytuł");
@@ -68,6 +68,52 @@ public class Ksiazka extends Baza {
         }
 
     }
+
+    public void setTytul(String tytul) {
+        try {
+            resultSet=s.executeQuery("select tytuł.id,imie,nazwisko,autor.id as idA from tytuł left join autor on autor.id=idAutor where Tytuł='"+tytul+"'");
+            if(resultSet.next()){
+                idA=resultSet.getInt("idA");
+                idT=resultSet.getInt("id");
+                imie=resultSet.getString("imie");
+                nazwisko=resultSet.getString("nazwisko");
+                this.tytul=tytul;
+                resultSet.close();
+                s.execute("UPDATE `biblioteka`.`książki` SET `idTytuł` = "+idT+" WHERE `id` ="+idK);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setIdT(int idT) {
+        try {
+            resultSet=s.executeQuery("select tytuł,imie,nazwisko,autor.id as idA from tytuł left join autor on autor.id=idAutor where tytuł.id="+idT);
+            if(resultSet.next()){
+                idA=resultSet.getInt("idA");
+                this.idT=idT;
+                imie=resultSet.getString("imie");
+                nazwisko=resultSet.getString("nazwisko");
+                this.tytul=resultSet.getString("tytuł");;
+                resultSet.close();
+                s.execute("UPDATE `biblioteka`.`książki` SET `idTytuł` = "+idT+" WHERE `id` ="+idK);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setIdK(int idK) {
+        try {
+                s.execute("UPDATE `biblioteka`.`książki` SET `id` = "+idK+" WHERE `id` ="+this.idK);
+                this.idK=idK;
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+        }
+    }
+
     public int ileDostepnych(){
         try {
             resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) as ilosc FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getIdT()+" and idAutor="+getIdA()+" group by Tytuł");

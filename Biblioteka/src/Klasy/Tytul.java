@@ -23,6 +23,21 @@ public class Tytul extends Baza{
         }
         this.id = id;
     }
+
+    public boolean czyDostepna(){
+        try {
+            resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getId()+" and idAutor="+getIdA()+" group by Tytuł");
+            if(resultSet.next()) return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int getIdA() {
+        return idA;
+    }
+
     public void setIdA(int idA) {
         try {
             s.execute("UPDATE `biblioteka`.`tytuł` SET `idAutor` = "+idA+" WHERE `id` ="+getId());

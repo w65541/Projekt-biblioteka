@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Admin extends Login{
-    Connection c;
 
     public Admin(String username,String password) {
         super(username,password);
@@ -40,7 +39,7 @@ public class Admin extends Login{
                     upd.executeUpdate("UPDATE `biblioteka`.`wyporzyczenia`\n" +
                             "SET\n" +
                             "`kara` =" +(resultSet.getString("kara")+"+"+kara)+"\n" +
-                            "WHERE `idWyporzyczenia` ="+ resultSet.getString("idWyporzyczenia")+";");
+                            "WHERE `id` ="+ resultSet.getString("id")+";");
                 }
             }
         }catch (Exception e){
@@ -113,25 +112,25 @@ public class Admin extends Login{
         try {
             Statement get=c.createStatement();
             ResultSet resultSet=get.executeQuery("select * from biblioteka.autor where imie='"+i+"' and nazwisko='"+n+"'");
-            if(resultSet.next()) return true;
+            if(resultSet.next()) return false;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
     public  boolean czyNowyTytul(String t,int idA){
         try {
             Statement get=c.createStatement();
             ResultSet resultSet=get.executeQuery("select * from biblioteka.tytuł where tytuł='"+t+"' and idAutor='"+idA+"'");
-            if(resultSet.next()) return true;
+            if(resultSet.next()) return false;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
     public  int dodajAutor(String i,String n){
         try {
-            if(!czyNowyAutor(i,n)){
+            if(czyNowyAutor(i,n)){
                 System.out.println("debug");
                 Statement ins=c.createStatement();
                 ins.executeUpdate("INSERT INTO `biblioteka`.`autor`\n" +
@@ -154,7 +153,7 @@ public class Admin extends Login{
     }
     public  int dodajTytul(String t,int idA){
         try {
-            if(!czyNowyTytul(t,idA)){
+            if(czyNowyTytul(t,idA)){
                 Statement ins=c.createStatement();
                 ins.executeUpdate("INSERT INTO `biblioteka`.`tytuł`\n" +
                         "(`Tytuł`,\n" +
@@ -189,7 +188,7 @@ public class Admin extends Login{
         }
     }
 
-    public void dodajCzytelnika(String imie,String nazwisko,String email,int telefon,String adres,String username,String haslo){
+    public int dodajCzytelnika(String imie,String nazwisko,String email,int telefon,String adres,String username,String haslo){
         try{
             String sql="CREATE USER '"+username+"'@'localhost' IDENTIFIED BY 'password'; GRANT select ON biblioteka.* TO '"+username+"'@'localhost';";
 
@@ -210,12 +209,17 @@ public class Admin extends Login{
                     "'"+telefon+"',\n" +
                     "'"+adres+"',\n" +
                     "'"+username+"');\n");
+            r=s.executeQuery("select id from czytelnik where " +
+                    "imie='"+imie+"' and nazwisko='"+nazwisko+"' and email='"+email+"' and telefon='"+telefon+"' and adres='"+adres+"' and username='"+username+"'");
+            r.next();
+            return r.getInt("id");
         }catch (Exception e){
             e.printStackTrace();
+            return 0;
         }
     }
 
-    public void dodajWyporzyczenie(int idK,int idC){
+    public int dodajWyporzyczenie(int idK,int idC){
         try {
             if(new Ksiazka(c,idK).czyDostepna()) {
                 s.execute("INSERT INTO `biblioteka`.`wyporzyczenia`\n" +
@@ -227,10 +231,14 @@ public class Admin extends Login{
                         idK + ",\n" +
                         "now())");
                 zmianaStanuKsiazki(idK);
+                r=s.executeQuery("select id from wyporzyczenia where idCzytelnik="+idC+" and idKsiążki="+idK+" and dataOddania is null");
+                r.next();
+                return r.getInt("id");
             }
         }catch (Exception e){
             e.printStackTrace();
-        }
+
+        }return 0;
     }
     public void zakonczWyporzyczenie(int idK,int idC){
         try {
@@ -238,7 +246,7 @@ public class Admin extends Login{
                 s.execute("UPDATE `biblioteka`.`wyporzyczenia`\n" +
                         "SET\n" +
                         "`dataOddania` = now()\n" +
-                        "WHERE `idKsiążki` = "+idK+" and idCzytelnik="+idC);
+                        "WHERE `idKsiążki` = "+idK+" and idCzytelnik="+idC+" and dataOddania is null");
                 zmianaStanuKsiazki(idK);
             }
         }catch (Exception e){

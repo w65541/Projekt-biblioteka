@@ -123,10 +123,13 @@ public class Ksiazka extends Baza {
         }
         return 0;
     }
+
     public boolean czyDostepna(){
         try {
-            resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getIdT()+" and idAutor="+getIdA()+" group by Tytuł");
-            if(resultSet.next()) return true;
+            resultSet=s.executeQuery("SELECT * FROM książki where id="+getIdK());
+            if(resultSet.next()){
+                if(resultSet.getInt("czyWyporzyczona")==0) return true;
+            }
         }catch(Exception e){
             e.printStackTrace();
         }

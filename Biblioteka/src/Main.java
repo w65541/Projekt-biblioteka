@@ -22,7 +22,7 @@ public class Main {
     public static void main(String[] args) {
         try{
         Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
-        Statement statement=connection.createStatement();
+       /* Statement statement=connection.createStatement();
             Admin admin=new Admin("root","root");
         ResultSet resultSet=statement.executeQuery("select * from biblioteka.autor");
         while (resultSet.next()){
@@ -43,13 +43,15 @@ public class Main {
             Ksiazka k=new Ksiazka(connection,"Potop","Henryk","Sienkiewicz");
         System.out.println(file);
         System.out.println(k.ileDostepnych());
-        k.czyDostepna();
+
         //odsetki(connection,5,1);
             //zmianaStanuKsiazki(connection,3);
            // System.out.println(czyNowyAutor(connection, "testimiie","testnazwisko"));
 
             Wyporzyczenia wyp=new Wyporzyczenia(connection,3);
-            System.out.println(wyp.toString());
+            System.out.println(wyp.toString());*/
+            Ksiazka k=new Ksiazka(connection,3);
+            System.out.println(k.czyDostepna());
         }catch (Exception e){
             e.printStackTrace();
         }

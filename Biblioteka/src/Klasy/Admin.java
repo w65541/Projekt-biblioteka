@@ -25,7 +25,7 @@ public class Admin extends Login{
         }
     }
 
-
+    //metoda naliczająca odsetki za przetrzymywanie książki
     public  void odsetki(int kara,int limit){
         try {
             Statement get=c.createStatement();
@@ -46,25 +46,18 @@ public class Admin extends Login{
             e.printStackTrace();
         }
     }
+
+    //zmiana statusu książki
     public  void zmianaStanuKsiazki(int id){
         try {
             new Ksiazka(c,id).zmianaStanuKsiazki();
-       /*     Statement get=c.createStatement();
-            Statement upd=c.createStatement();
-            ResultSet resultSet=get.executeQuery("select czyWyporzyczona from biblioteka.książki where id="+id+";");
-            if (resultSet.next()){
-                if(resultSet.getString(1).equals("0")){upd.executeUpdate("UPDATE `biblioteka`.`książki`\n" +
-                        "SET\n" +
-                        "`czyWyporzyczona` = 1\n" +
-                        "WHERE `id` ="+ id+";");}else{upd.executeUpdate("UPDATE `biblioteka`.`książki`\n" +
-                        "SET\n" +
-                        "`czyWyporzyczona` = 0\n" +
-                        "WHERE `id` ="+ id+";");}}*/
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
+
+    //Dodawanie książek z pliku .csv, automatycznie dodaje nowych autorów i tytuły
     public  void dodajZCSV( Path p){
         try {
             int idA,idT;
@@ -85,6 +78,8 @@ public class Admin extends Login{
             e.printStackTrace();
         }
     }
+
+    //Tworzy plik .csv z ResultSet
     public static void zapiszDoCSV(ResultSet r,Path p){
         try{
             BufferedWriter writer = Files.newBufferedWriter(p, StandardCharsets.UTF_8 ) ;
@@ -108,6 +103,7 @@ public class Admin extends Login{
         };
     }
 
+    //Sprawdza czy dany autor istnieje w bazie danych
     public  boolean czyNowyAutor(String i,String n){
         try {
             Statement get=c.createStatement();
@@ -118,6 +114,7 @@ public class Admin extends Login{
         }
         return true;
     }
+    //Sprawdza czy dany tytuł istnieje w bazie danych
     public  boolean czyNowyTytul(String t,int idA){
         try {
             Statement get=c.createStatement();
@@ -128,6 +125,7 @@ public class Admin extends Login{
         }
         return true;
     }
+    //Dodaje nowego autora do bazy danych i wzraca id nowego lub już istniejącego
     public  int dodajAutor(String i,String n){
         try {
             if(czyNowyAutor(i,n)){
@@ -151,6 +149,7 @@ public class Admin extends Login{
 
 
     }
+    //Dodaje nowy tytuł do bazy danych i wzraca id nowego lub już istniejącego
     public  int dodajTytul(String t,int idA){
         try {
             if(czyNowyTytul(t,idA)){
@@ -171,6 +170,7 @@ public class Admin extends Login{
             return 0;
         }
     }
+    //Dodaje nową książkę do bazy danych i zwraca jej id
     public  int dodajKsiazke(int idT){
         try {
             Statement ins=c.createStatement();
@@ -187,7 +187,7 @@ public class Admin extends Login{
             return 0;
         }
     }
-
+    //Dodaje nowego czytelnika do bazy danych i tworzy też w niej urzytkownika nadając odpowiednie uprawnienia
     public int dodajCzytelnika(String imie,String nazwisko,String email,int telefon,String adres,String username,String haslo){
         try{
             String sql="CREATE USER '"+username+"'@'localhost' IDENTIFIED BY 'password'; GRANT select ON biblioteka.* TO '"+username+"'@'localhost';";
@@ -219,6 +219,7 @@ public class Admin extends Login{
         }
     }
 
+    //Wyporzycza książkę
     public int dodajWyporzyczenie(int idK,int idC){
         try {
             if(!new Ksiazka(c,idK).isCzyWyp()) {
@@ -240,6 +241,7 @@ public class Admin extends Login{
 
         }return 0;
     }
+    //Oddaje książkę
     public void zakonczWyporzyczenie(int idK,int idC){
         try {
 
@@ -253,6 +255,7 @@ public class Admin extends Login{
             e.printStackTrace();
         }
     }
+    //Usuwa rekord z danej tabeli o podanym id
     public void usun(String tabela,int id){
         try {
             s.execute("DELETE FROM `biblioteka`.`"+tabela+"` WHERE id="+id);
@@ -261,6 +264,7 @@ public class Admin extends Login{
             e.printStackTrace();
         }
     }
+    //Zwraca ResultSet posiadanych książek z informacją ile ich jest dostępnych
     public ResultSet inwentarz(){
         try{
             String sql="SELECT Tytuł,Imie,Nazwisko,sum(czyWyporzyczona=0) as 'Dostępne',  count(czyWyporzyczona) as 'Ilość' FROM książki left join tytuł \n" +
@@ -272,6 +276,7 @@ public class Admin extends Login{
         }
         return null;
     }
+    //Zwraca ResultSet wszystkich niezakończonych wyporzyczeń
     public ResultSet aktualneWyporzyczenia(){
         try{
             String sql="SELECT * from wyporzyczenia where dataOddania is null";

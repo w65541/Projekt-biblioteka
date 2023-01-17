@@ -132,7 +132,7 @@ public class Czytelnik extends Baza{
     public int getId() {
         return id;
     }
-
+    //Zwraca ResultSet obecnie wyporzyczonych książek
     public ResultSet aktwyneWyporzyczenia(){
         try{
             resultSet= s.executeQuery("SELECT Tytuł,Imie,Nazwisko,dataWyporzyczenia,kara FROM biblioteka.wyporzyczenia left join biblioteka.książki on biblioteka.książki.id=idKsiążki left join tytuł on tytuł.id=idTytuł left join autor on autor.id=idAutor where idCzytelnik="+id+" and dataOddania is null");
@@ -142,7 +142,7 @@ public class Czytelnik extends Baza{
         }
         return null;
     }
-
+    //Zwraca ResultSet wszystkich wyporzyczeń urzytkownika
     public ResultSet historiaWyporzyczenia(){
         try{
             resultSet= s.executeQuery("SELECT Tytuł,Imie,Nazwisko,dataWyporzyczenia,dataOddania,kara FROM biblioteka.wyporzyczenia left join biblioteka.książki on biblioteka.książki.id=idKsiążki left join tytuł on tytuł.id=idTytuł left join autor on autor.id=idAutor where idCzytelnik="+id);

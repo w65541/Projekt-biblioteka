@@ -47,7 +47,7 @@ public class Autor extends Baza{
     public int getId() {
         return id;
     }
-
+    //Zwraca ResultSet tytułów danego autora
     public ResultSet tytulyAutora(){
         try{
 
@@ -59,7 +59,7 @@ public class Autor extends Baza{
         }
         return null;
     }
-
+    //Zwraca ResultSet książek danego autora
     public ResultSet ksiazkiAutora(){
         try{
 

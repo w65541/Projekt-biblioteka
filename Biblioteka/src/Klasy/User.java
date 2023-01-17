@@ -33,7 +33,7 @@ public class User extends Login{
     public Czytelnik getUser() {
         return user;
     }
-
+    //Sprawdzenie czy dany tytuł jest dostępny, bardziej i mniej szczegółowa wersja
     public boolean czyDostepna(String tytul, String imie, String nazwisko){
         if(!tytul.contains("czytelnik") || !imie.contains("czytelnik") || !nazwisko.contains("czytelnik")){
         Tytul k=new Tytul(c,tytul,imie,nazwisko);
@@ -48,21 +48,25 @@ public class User extends Login{
         }
         return false;
     }
+    //Zwraca ResultSet wszystkich wyporzyczeń urzytkownika
     public ResultSet historiaWyporzyczen(){
-        return getUser().historiaWyporzyczenia();
-    }
-    public void wyporzyczoneKsiazki(int limit){
         try{
-            LocalDate date;
-            r= getUser().aktwyneWyporzyczenia();
-                while (r.next()){
-                    date= LocalDate.parse(r.getString("dataWyporzyczenia").substring(0,10));
-                    System.out.println(r.getString("Tytuł")+" "+r.getString("Imie")+" "+r.getString("Nazwisko")+" "+r.getString("dataWyporzyczenia")+" "+ (limit-ChronoUnit.DAYS.between(date,LocalDate.now()))+" "+r.getString("Kara"));
-                }
-
-        }catch (Exception e){
+        return getUser().historiaWyporzyczenia();
+        }catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+    //Zwraca ResultSet obecnie wyporzyczonych książek
+    public ResultSet wyporzyczoneKsiazki(int limit){
+        try{
+            LocalDate date;
+            return getUser().aktwyneWyporzyczenia();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

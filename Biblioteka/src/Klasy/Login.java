@@ -17,7 +17,7 @@ public class Login {
             e.printStackTrace();
         }
     }
-
+    //Zwraca ResulSet wyszukiwarki, można wstawić puste "" a i tak będzie działać
     public ResultSet wyszukaj(String tytul,String imie,String nazwisko){
         if(!tytul.contains("czytelnik") || !imie.contains("czytelnik") || !nazwisko.contains("czytelnik")){
         try{

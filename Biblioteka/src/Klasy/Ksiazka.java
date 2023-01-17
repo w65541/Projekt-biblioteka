@@ -28,29 +28,6 @@ public class Ksiazka extends Baza {
         }
     }
 
-    public Ksiazka(Connection connection, String tytul) {
-        super(connection);
-        this.tytul = tytul;
-        try {
-            s=c.createStatement();
-            resultSet=s.executeQuery("select id from biblioteka.tytuł where Tytuł='"+tytul+"'");
-            if(resultSet.next()) idT=resultSet.getInt("id");
-            resultSet.close();
-
-            resultSet=s.executeQuery("select autor.id,Imie,Nazwisko from biblioteka.autor left join biblioteka.tytuł on biblioteka.autor.id=idAutor where Tytuł='"+tytul+"'");
-            if(resultSet.next()){
-                idA=resultSet.getInt("id");
-                imie=resultSet.getString("Imie");
-                nazwisko=resultSet.getString("Nazwisko");
-            }
-
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
     public void setTytul(String tytul) {
         try {
             resultSet=s.executeQuery("select tytuł.id,imie,nazwisko,autor.id as idA from tytuł left join autor on autor.id=idAutor where Tytuł='"+tytul+"'");
@@ -99,6 +76,8 @@ public class Ksiazka extends Baza {
     public boolean isCzyWyp() {
         return czyWyp;
     }
+
+    //zmiana statusu książki
     public  void zmianaStanuKsiazki(){
         try {
                 if(!czyWyp){s.executeUpdate("UPDATE `biblioteka`.`książki` SET `czyWyporzyczona` = 1 WHERE `id` ="+ idK+";");

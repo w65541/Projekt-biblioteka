@@ -1,8 +1,13 @@
 package Testy;
 
 import Klasy.Admin;
+import Klasy.Autor;
 import org.junit.Assert;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -38,14 +43,15 @@ public class AdminTest {
         }
     }
 
-    @org.junit.Test
-    public void dodajZCSV() {
-        Admin test=new Admin("root","root");
-    }
 
     @org.junit.Test
-    public void zapiszDoCSV() {
+    public void CSV() throws IOException {
         Admin test=new Admin("root","root");
+        Path p=Paths.get("C:\\Users\\HP\\Documents\\Projekt biblioteka\\Projekt-biblioteka\\Biblioteka\\src\\Testy");
+        test.zapiszDoCSV(test.inwentarz(),p.resolve("testDoCSV1.csv"));
+        test.dodajZCSV(p.resolve("testZCSV.csv"));
+        test.zapiszDoCSV(test.inwentarz(),p.resolve("testDoCSV2.csv"));
+        Assert.assertNotEquals(Files.mismatch(p.resolve("testDoCSV1.csv"),p.resolve("testDoCSV2.csv")),-1);
     }
 
     @org.junit.Test
@@ -98,7 +104,20 @@ public class AdminTest {
     }
 
     @org.junit.Test
-    public void inwentarz() {
+    public void wyniki() {
         Admin test=new Admin("root","root");
+
+        try {
+            Connection c= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
+            Autor test2=new Autor(c,"Henryk","Sienkiewicz");
+            test.inwentarz();
+            test.wyszukaj("","","");
+            test.aktualneWyporzyczenia();
+            test2.ksiazkiAutora();
+            test2.tytulyAutora();
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
     }
 }

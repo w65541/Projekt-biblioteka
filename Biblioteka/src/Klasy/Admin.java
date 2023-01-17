@@ -48,7 +48,8 @@ public class Admin extends Login{
     }
     public  void zmianaStanuKsiazki(int id){
         try {
-            Statement get=c.createStatement();
+            new Ksiazka(c,id).zmianaStanuKsiazki();
+       /*     Statement get=c.createStatement();
             Statement upd=c.createStatement();
             ResultSet resultSet=get.executeQuery("select czyWyporzyczona from biblioteka.książki where id="+id+";");
             if (resultSet.next()){
@@ -58,7 +59,7 @@ public class Admin extends Login{
                         "WHERE `id` ="+ id+";");}else{upd.executeUpdate("UPDATE `biblioteka`.`książki`\n" +
                         "SET\n" +
                         "`czyWyporzyczona` = 0\n" +
-                        "WHERE `id` ="+ id+";");}}
+                        "WHERE `id` ="+ id+";");}}*/
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -68,7 +69,6 @@ public class Admin extends Login{
         try {
             int idA,idT;
             CSVParser plik=CSVParser.parse(p, Charset.defaultCharset(), CSVFormat.DEFAULT.withFirstRecordAsHeader());
-            System.out.println(plik.getHeaderNames().toString());
             for (CSVRecord record : plik) {
                 String field_1 = record.get("Tytuł");
                 String field_2 = record.get("Imie");
@@ -221,7 +221,7 @@ public class Admin extends Login{
 
     public int dodajWyporzyczenie(int idK,int idC){
         try {
-            if(new Ksiazka(c,idK).czyDostepna()) {
+            if(!new Ksiazka(c,idK).isCzyWyp()) {
                 s.execute("INSERT INTO `biblioteka`.`wyporzyczenia`\n" +
                         "(`idCzytelnik`,\n" +
                         "`idKsiążki`,\n" +
@@ -242,13 +242,13 @@ public class Admin extends Login{
     }
     public void zakonczWyporzyczenie(int idK,int idC){
         try {
-            if(!new Ksiazka(c,idK).czyDostepna()) {
+
                 s.execute("UPDATE `biblioteka`.`wyporzyczenia`\n" +
                         "SET\n" +
                         "`dataOddania` = now()\n" +
                         "WHERE `idKsiążki` = "+idK+" and idCzytelnik="+idC+" and dataOddania is null");
                 zmianaStanuKsiazki(idK);
-            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -272,4 +272,15 @@ public class Admin extends Login{
         }
         return null;
     }
+    public ResultSet aktualneWyporzyczenia(){
+        try{
+            String sql="SELECT * from wyporzyczenia where dataOddania is null";
+            r=s.executeQuery(sql);
+            return r;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

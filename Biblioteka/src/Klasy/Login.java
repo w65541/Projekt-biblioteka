@@ -37,7 +37,6 @@ public class Login {
                 }else {sql+=" Nazwisko regexp '.*' ";}
             }
             sql+=" group by tytuł.id";
-            System.out.println(sql);
             r=s.executeQuery(sql);
             return r;
         }catch (Exception e){

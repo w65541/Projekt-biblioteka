@@ -1,43 +1,25 @@
 package Klasy;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class Ksiazka extends Baza {
     String tytul,imie,nazwisko;
     int idT=0,idA=0,idK=0;
+    boolean czyWyp;
 
-    public Ksiazka(Connection connection, String tytul, String imie, String nazwisko) {
-        super(connection);
-        this.tytul = tytul;
-        this.imie = imie;
-        this.nazwisko = nazwisko;
-        try {
-            resultSet=s.executeQuery("select id from biblioteka.autor where imie='"+imie+"' and nazwisko='"+nazwisko+"'");
-            if(resultSet.next()) idA=resultSet.getInt("id");
-            resultSet.close();
-
-            resultSet=s.executeQuery("select id from biblioteka.tytuł where Tytuł='"+tytul+"' and idAutor="+idA+"");
-            if(resultSet.next()) idT=resultSet.getInt("id");
-            resultSet.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-    }
 
     public Ksiazka(Connection connection, int idK) {
         super(connection);
         this.idK = idK;
         try {
-            resultSet=s.executeQuery("SELECT Tytuł,Imie,Nazwisko,idTytuł,idAutor FROM książki left join tytuł  on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor where książki.id="+idK);
+            resultSet=s.executeQuery("SELECT Tytuł,Imie,Nazwisko,idTytuł,idAutor,czyWyporzyczona FROM książki left join tytuł  on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor where książki.id="+idK);
             if(resultSet.next()) {
                 idA=resultSet.getInt("idAutor");
                 idT=resultSet.getInt("idTytuł");
                 imie=resultSet.getString("imie");
                 nazwisko=resultSet.getString("nazwisko");
                 tytul=resultSet.getString("tytuł");
+                czyWyp =resultSet.getBoolean("czyWyporzyczona");
             }
             resultSet.close();
 
@@ -114,27 +96,21 @@ public class Ksiazka extends Baza {
         }
     }
 
-    public int ileDostepnych(){
+    public boolean isCzyWyp() {
+        return czyWyp;
+    }
+    public  void zmianaStanuKsiazki(){
         try {
-            resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) as ilosc FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getIdT()+" and idAutor="+getIdA()+" group by Tytuł");
-            if(resultSet.next()) return resultSet.getInt("ilosc");
-        }catch(Exception e){
+                if(!czyWyp){s.executeUpdate("UPDATE `biblioteka`.`książki` SET `czyWyporzyczona` = 1 WHERE `id` ="+ idK+";");
+                }else{
+                    s.executeUpdate("UPDATE `biblioteka`.`książki` SET `czyWyporzyczona` = 0 WHERE `id` ="+ idK+";");}
+                czyWyp=!czyWyp;
+        }catch (Exception e){
             e.printStackTrace();
         }
-        return 0;
+
     }
 
-    public boolean czyDostepna(){
-        try {
-            resultSet=s.executeQuery("SELECT * FROM książki where id="+getIdK());
-            if(resultSet.next()){
-                if(resultSet.getInt("czyWyporzyczona")==0) return true;
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return false;
-    }
     public String getTytul() {
         return tytul;
     }

@@ -34,18 +34,23 @@ public class User extends Login{
         return user;
     }
 
-    public void czyDostepna(String tytul, String imie, String nazwisko){
+    public boolean czyDostepna(String tytul, String imie, String nazwisko){
         if(!tytul.contains("czytelnik") || !imie.contains("czytelnik") || !nazwisko.contains("czytelnik")){
-        Ksiazka k=new Ksiazka(c,tytul,imie,nazwisko);
-        System.out.println(k.czyDostepna());}
+        Tytul k=new Tytul(c,tytul,imie,nazwisko);
+        if (k.czyDostepna()) return true;
+        }
+        return false;
     }
-    public void czyDostepna(String tytul){
+    public boolean czyDostepna(String tytul){
         if(!tytul.contains("czytelnik")){
-        Ksiazka k=new Ksiazka(c,tytul);
-        System.out.println(k.toString());
-        System.out.println(k.czyDostepna());}
+        Tytul k=new Tytul(c,tytul);
+        if(k.czyDostepna())return true;
+        }
+        return false;
     }
-
+    public ResultSet historiaWyporzyczen(){
+        return getUser().historiaWyporzyczenia();
+    }
     public void wyporzyczoneKsiazki(int limit){
         try{
             LocalDate date;

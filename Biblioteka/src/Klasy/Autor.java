@@ -20,7 +20,21 @@ public class Autor extends Baza{
             e.printStackTrace();
         }
     }
-
+    public Autor(Connection connection, int id) {
+        super(connection);
+        this.id=id;
+        try{
+            s=c.createStatement();
+            resultSet=s.executeQuery("select imie,nazwisko from biblioteka.autor where id="+id);
+            if(resultSet.next()) {
+                imie=resultSet.getString("imie");
+                nazwisko=resultSet.getString("nazwisko");
+            }
+            resultSet.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public String getImie() {
         return imie;

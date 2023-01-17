@@ -11,7 +11,7 @@ public class Tytul extends Baza{
         super(connection);
 
         try {
-            resultSet=s.executeQuery("SELECT Tytuł,idAutora FROM tytuł where id="+getId());
+            resultSet=s.executeQuery("SELECT Tytuł,idAutora FROM tytuł where id="+id);
             if(resultSet.next()) {
                 idA=resultSet.getInt("idAutor");
                 tytul=resultSet.getString("tytuł");
@@ -23,7 +23,39 @@ public class Tytul extends Baza{
         }
         this.id = id;
     }
+    public Tytul(Connection connection, String tytul) {
+        super(connection);
 
+        try {
+            resultSet=s.executeQuery("SELECT id,idAutor FROM tytuł where Tytuł='"+tytul+"'");
+            if(resultSet.next()) {
+                idA=resultSet.getInt("idAutor");
+                id=resultSet.getInt("id");
+            }
+            resultSet.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        this.tytul = tytul;
+    }
+    public Tytul(Connection connection, String tytul,String imie,String nazwisko) {
+        super(connection);
+
+        try {
+            if(imie.isBlank()) imie=".*";
+            resultSet=s.executeQuery("SELECT tytuł.id,idAutor FROM tytuł left join autor on idAutor=autor.id where Tytuł='"+tytul+"' and imie regexp '"+imie+"' and nazwisko='"+nazwisko+"'");
+            if(resultSet.next()) {
+                idA=resultSet.getInt("idAutor");
+                id=resultSet.getInt("id");
+            }
+            resultSet.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        this.tytul = tytul;
+    }
     public boolean czyDostepna(){
         try {
             resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getId()+" and idAutor="+getIdA()+" group by Tytuł");
@@ -33,7 +65,15 @@ public class Tytul extends Baza{
         }
         return false;
     }
-
+    public int ileDostepnych(){
+        try {
+            resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) as ilosc FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getId()+" and idAutor="+getIdA()+" group by Tytuł");
+            if(resultSet.next()) return resultSet.getInt("ilosc");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public int getIdA() {
         return idA;
     }

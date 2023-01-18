@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import Klasy.Admin;
 import Klasy.Ksiazka;
@@ -16,41 +17,51 @@ import Klasy.User;
 import Klasy.Wyporzyczenia;
 import org.apache.commons.csv.*;
 
+import javax.swing.*;
+
 //user wyszukiwarka
 //admin przerabianie wyników wyszukiwania na csv, dodawanie użytkownika
 public class Main {
     public static void main(String[] args) {
         try{
-        Connection connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
-        Statement statement=connection.createStatement();
-            Admin admin=new Admin("root","root");/*
-        ResultSet resultSet=statement.executeQuery("select * from biblioteka.autor");
-        while (resultSet.next()){
-            System.out.println(resultSet.getString("imie"));
-        }
-        Path directory=Paths.get("C:\\Users\\HP\\Documents\\Projekt biblioteka\\Projekt-biblioteka\\Biblioteka");
-        Path file=directory.resolve("test.csv");
-            Path file2=directory.resolve("test2.csv");
-        //dodajZCSV(connection,file);
-            User user=new User("user","user");
-    user.czyDostepna("potop");
-    user.wyporzyczoneKsiazki(14);
-    System.out.println("".isBlank());
-    Ksiazka ks=new Ksiazka(connection,3);
-            System.out.println(ks.toString());
-//zapiszDoCSV( user.wyszukaj("","","sienkiew"), file2);
-            zapiszDoCSV( admin.inwentarz(), file2);
-            Ksiazka k=new Ksiazka(connection,"Potop","Henryk","Sienkiewicz");
-        System.out.println(file);
-        System.out.println(k.ileDostepnych());
+        int m1,m2;
+        Admin admin;
+        User user;
+            //JFrame a = new GuiUser("user","user");
+            //JFrame a = new GuiAdmin("root","root");
+           // a.setVisible(true);
 
-        //odsetki(connection,5,1);
-            //zmianaStanuKsiazki(connection,3);
-           // System.out.println(czyNowyAutor(connection, "testimiie","testnazwisko"));
+        String username,password;
+            Scanner in = new Scanner(System.in);
 
-            Wyporzyczenia wyp=new Wyporzyczenia(connection,3);
-            System.out.println(wyp.toString());*/
-         wyswietl(admin.inwentarz());
+             System.out.println("0 - Logowanie do admina\n1 - Logowanie do usera\n9 - wyjście");
+             m1=in.nextInt();
+             switch (m1){
+                 case 0:
+                     System.out.print("Username: ");
+                     username=in.next();
+                     System.out.print("Password: ");
+                     password=in.next();
+                     admin=new Admin(username,password);
+                     JFrame a = new GuiAdmin(username,password);
+                     a.setVisible(true);
+                     break;
+
+                 case 1:
+                        System.out.print("Username: ");
+                     username=in.next();
+                     System.out.print("Password: ");
+                     password=in.next();
+                     user=new User(username,password);
+                     JFrame b = new GuiUser(username,password);
+                     b.setVisible(true);
+                     break;
+                 case 9: return;
+                 default:
+
+             }
+
+
         }catch (Exception e){
             e.printStackTrace();
         }

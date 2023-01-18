@@ -86,6 +86,8 @@ public class Czytelnik extends Baza{
     public void setUsername(String username) {
         try {
             s.execute("UPDATE `biblioteka`.`czytelnik` SET `username` = '"+username+"' WHERE `id` ="+getId());
+            s.execute("rename user '"+getUsername()+"'@localhost to '"+username+"'@localhost");
+            s.execute("FLUSH PRIVILEGES");
             this.username=username;
 
         }catch(Exception e){
@@ -93,7 +95,17 @@ public class Czytelnik extends Baza{
             e.printStackTrace();
         }
     }
+    public void setPassword(String password) {
+        try {
+            s.execute("set password for '"+getUsername()+"'@localhost='"+username+"'");
+            s.execute("FLUSH PRIVILEGES");
+            this.username=username;
 
+        }catch(Exception e){
+
+            e.printStackTrace();
+        }
+    }
     public void setId(int id) {
         try {
             s.execute("UPDATE `biblioteka`.`czytelnik` SET `id` = "+id+" WHERE `id` ="+getId());

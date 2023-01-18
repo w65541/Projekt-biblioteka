@@ -58,7 +58,7 @@ public class User extends Login{
         return null;
     }
     //Zwraca ResultSet obecnie wyporzyczonych książek
-    public ResultSet wyporzyczoneKsiazki(int limit){
+    public ResultSet wyporzyczoneKsiazki(){
         try{
             LocalDate date;
             return getUser().aktwyneWyporzyczenia();

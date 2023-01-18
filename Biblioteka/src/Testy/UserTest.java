@@ -21,7 +21,7 @@ public class UserTest {
     @Test
     public void wyporzyczoneKsiazki() {
         User test=new User("user","user");
-        test.wyporzyczoneKsiazki(1);
+        test.wyporzyczoneKsiazki();
         test.historiaWyporzyczen();
     }
 }

@@ -80,7 +80,7 @@ public class Admin extends Login{
     }
 
     //Tworzy plik .csv z ResultSet
-    public static void zapiszDoCSV(ResultSet r,Path p){
+    public void zapiszDoCSV(ResultSet r,Path p){
         try{
             BufferedWriter writer = Files.newBufferedWriter(p, StandardCharsets.UTF_8 ) ;
             CSVFormat csvFileFormat = CSVFormat.DEFAULT;
@@ -188,7 +188,7 @@ public class Admin extends Login{
         }
     }
     //Dodaje nowego czytelnika do bazy danych i tworzy też w niej urzytkownika nadając odpowiednie uprawnienia
-    public int dodajCzytelnika(String imie,String nazwisko,String email,int telefon,String adres,String username,String haslo){
+    public int dodajCzytelnika(String imie,String nazwisko,String email,String telefon,String adres,String username,String haslo){
         try{
             String sql="CREATE USER '"+username+"'@'localhost' IDENTIFIED BY 'password'; GRANT select ON biblioteka.* TO '"+username+"'@'localhost';";
 
@@ -263,6 +263,35 @@ public class Admin extends Login{
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    //customowe wyszukiwanie sql
+    public ResultSet wyszukajtabela(String tabela,String warunek){
+        try {
+            String sql="select * FROM `biblioteka`.`"+tabela+"`";
+            if(!warunek.isBlank()) sql+=" where "+warunek;
+            r=s.executeQuery(sql);
+            return r;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    //wykonanie zapytania sql
+    public ResultSet wykonajSql(String sql){
+        try {
+            if((sql.contains("select") || sql.contains("SELECT")) && !sql.contains(";")){
+                r=s.executeQuery(sql);
+                return r;
+            }
+            String[] sqll=sql.split(";");
+            for (int i=0;i<sqll.length;i++){
+             s.execute(sqll[i]);
+            }
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
     //Zwraca ResultSet posiadanych książek z informacją ile ich jest dostępnych
     public ResultSet inwentarz(){

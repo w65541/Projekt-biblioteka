@@ -1,7 +1,4 @@
-import Klasy.Admin;
-import Klasy.Autor;
-import Klasy.Czytelnik;
-import Klasy.Tytul;
+import Klasy.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -66,6 +63,7 @@ public class GuiAdmin extends JFrame{
         admin=new Admin(u,p);
         this.setContentPane(this.jpanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setTitle("Admin user: "+u);
         setSize(1000,500);
         //table1.setModel(data);
         final ResultSet[] r = new ResultSet[1];
@@ -227,6 +225,24 @@ public class GuiAdmin extends JFrame{
                     r[0]=czytelnik.historiaWyporzyczenia();
                     wyswietl(r[0]);
                     r[0]=czytelnik.historiaWyporzyczenia();
+                }
+            }
+        });
+        zmodyfikujAutoraButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!idAutor.getText().isBlank()){
+                Autor autor=new Autor(admin.getC(),Integer.parseInt(idAutor.getText()));
+                if(!stringImie.getText().isBlank())autor.setImie(stringImie.getText());
+                if(!stringNazwisko.getText().isBlank())autor.setNazwisko(stringNazwisko.getText());
+            }
+            }
+        });
+        zmodyfikujKsiążkęButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!idBook.getText().isBlank() && !idTytul.getText().isBlank()){
+                    new Ksiazka(admin.getC(),Integer.parseInt(idBook.getText())).setIdT(Integer.parseInt(idTytul.getText()));
                 }
             }
         });

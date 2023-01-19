@@ -93,6 +93,18 @@ public class Autor extends Baza{
             e.printStackTrace();
         }
     }
+
+    public void setNazwisko(String nazwisko) {
+        try {
+            s.execute("UPDATE `biblioteka`.`autor` SET `nazwisko` = '"+nazwisko+"' WHERE `id` ="+getId());
+            this.nazwisko=nazwisko;
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+        }
+    }
+
     public void setIdK(String nazwisko) {
         try {
             s.execute("UPDATE `biblioteka`.`autor` SET `nazwisko` = '"+nazwisko+"' WHERE `id` ="+getId());

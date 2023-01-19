@@ -21,7 +21,7 @@ public class UserTest {
     @Test
     public void wyporzyczoneKsiazki() {
         User test=new User("user","user");
-        test.wyporzyczoneKsiazki();
-        test.historiaWyporzyczen();
+        Assert.assertNotNull(test.wyporzyczoneKsiazki());
+        Assert.assertNotNull(test.historiaWyporzyczen());
     }
 }

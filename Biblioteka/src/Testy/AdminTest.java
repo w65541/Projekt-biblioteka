@@ -101,6 +101,7 @@ public class AdminTest {
     @org.junit.Test
     public void usun() {
         Admin test=new Admin("root","root");
+        test.usun("książki", test.dodajKsiazke(11));
     }
 
     @org.junit.Test
@@ -110,11 +111,13 @@ public class AdminTest {
         try {
             Connection c= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
             Autor test2=new Autor(c,"Henryk","Sienkiewicz");
-            test.inwentarz();
-            test.wyszukaj("","","");
-            test.aktualneWyporzyczenia();
-            test2.ksiazkiAutora();
-            test2.tytulyAutora();
+            Assert.assertNotNull(test.inwentarz());
+            Assert.assertNotNull(test.wyszukaj("","",""));
+            Assert.assertNotNull(test.aktualneWyporzyczenia());
+            Assert.assertNotNull(test2.ksiazkiAutora());
+            Assert.assertNotNull(test2.tytulyAutora());
+            Assert.assertNotNull(test.wyszukajtabela("tytuł","id=1"));
+            Assert.assertNull(test.wykonajSql("SELECT * FROM biblioteka.książki;SELECT * FROM biblioteka.książki;"));
         }catch(Exception e){
             e.printStackTrace();
             Assert.fail();

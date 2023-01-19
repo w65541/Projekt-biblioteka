@@ -20,6 +20,7 @@ public class GuiUser extends JFrame{
     DefaultTableModel data;
     public GuiUser(String u,String p) {
         user=new User(u,p);
+        this.setTitle("User: "+u);
         this.setContentPane(this.jpanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000,500);

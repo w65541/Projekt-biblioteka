@@ -14,20 +14,26 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public class Admin extends Login{
-
-    public Admin(String username,String password) {
+public class Admin extends Login {
+    String username;
+    public Admin(String username,String password) throws SQLException {
         super(username,password);
         try{
-
+            this.username=username;
     }catch (Exception e){
             e.printStackTrace();
+            throw new SQLException();
         }
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     //metoda naliczająca odsetki za przetrzymywanie książki
     public  void odsetki(int kara,int limit){
         try {
+            czyDodatnia(kara);
             Statement get=c.createStatement();
             Statement upd=c.createStatement();
             ResultSet resultSet=get.executeQuery("select * from biblioteka.wyporzyczenia where dataOddania is null;");
@@ -50,6 +56,7 @@ public class Admin extends Login{
     //zmiana statusu książki
     public  void zmianaStanuKsiazki(int id){
         try {
+            czyDodatnia(id);
             new Ksiazka(c,id).zmianaStanuKsiazki();
         }catch (Exception e){
             e.printStackTrace();
@@ -117,8 +124,8 @@ public class Admin extends Login{
     //Sprawdza czy dany tytuł istnieje w bazie danych
     public  boolean czyNowyTytul(String t,int idA){
         try {
-            Statement get=c.createStatement();
-            ResultSet resultSet=get.executeQuery("select * from biblioteka.tytuł where tytuł='"+t+"' and idAutor='"+idA+"'");
+            czyDodatnia(idA);
+            ResultSet resultSet=s.executeQuery("select * from biblioteka.tytuł where tytuł='"+t+"' and idAutor='"+idA+"'");
             if(resultSet.next()) return false;
         }catch (Exception e){
             e.printStackTrace();
@@ -152,6 +159,7 @@ public class Admin extends Login{
     //Dodaje nowy tytuł do bazy danych i wzraca id nowego lub już istniejącego
     public  int dodajTytul(String t,int idA){
         try {
+            czyDodatnia(idA);
             if(czyNowyTytul(t,idA)){
                 Statement ins=c.createStatement();
                 ins.executeUpdate("INSERT INTO `biblioteka`.`tytuł`\n" +
@@ -173,6 +181,7 @@ public class Admin extends Login{
     //Dodaje nową książkę do bazy danych i zwraca jej id
     public  int dodajKsiazke(int idT){
         try {
+            czyDodatnia(idT);
             Statement ins=c.createStatement();
             ins.executeUpdate("INSERT INTO `biblioteka`.`książki`\n" +
                     "(`idTytuł`)\n" +
@@ -190,9 +199,7 @@ public class Admin extends Login{
     //Dodaje nowego czytelnika do bazy danych i tworzy też w niej urzytkownika nadając odpowiednie uprawnienia
     public int dodajCzytelnika(String imie,String nazwisko,String email,String telefon,String adres,String username,String haslo){
         try{
-            String sql="CREATE USER '"+username+"'@'localhost' IDENTIFIED BY 'password'; GRANT select ON biblioteka.* TO '"+username+"'@'localhost';";
-
-            s.execute("CREATE USER '"+username+"'@'localhost' IDENTIFIED BY 'password'");
+            s.execute("CREATE USER '"+username+"'@'localhost' IDENTIFIED BY '"+haslo+"'");
             s.execute("GRANT SELECT ON biblioteka.* TO '"+username+"'@'localhost';");
             s.execute("FLUSH PRIVILEGES");
             s.execute("INSERT INTO `biblioteka`.`czytelnik`\n" +
@@ -222,6 +229,8 @@ public class Admin extends Login{
     //Wyporzycza książkę
     public int dodajWyporzyczenie(int idK,int idC){
         try {
+            czyDodatnia(idK);
+            czyDodatnia(idC);
             if(!new Ksiazka(c,idK).isCzyWyp()) {
                 s.execute("INSERT INTO `biblioteka`.`wyporzyczenia`\n" +
                         "(`idCzytelnik`,\n" +
@@ -244,7 +253,8 @@ public class Admin extends Login{
     //Oddaje książkę
     public void zakonczWyporzyczenie(int idK,int idC){
         try {
-
+            czyDodatnia(idK);
+            czyDodatnia(idC);
                 s.execute("UPDATE `biblioteka`.`wyporzyczenia`\n" +
                         "SET\n" +
                         "`dataOddania` = now()\n" +
@@ -258,6 +268,7 @@ public class Admin extends Login{
     //Usuwa rekord z danej tabeli o podanym id
     public void usun(String tabela,int id){
         try {
+            czyDodatnia(id);
             s.execute("DELETE FROM `biblioteka`.`"+tabela+"` WHERE id="+id);
 
         }catch (Exception e){

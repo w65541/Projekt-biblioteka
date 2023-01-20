@@ -2,7 +2,7 @@ package Klasy;
 
 import java.sql.Connection;
 
-public class Ksiazka extends Baza {
+public class Ksiazka extends Baza implements Walidacja{
     String tytul,imie,nazwisko;
     int idT=0,idA=0,idK=0;
     boolean czyWyp;
@@ -47,6 +47,7 @@ public class Ksiazka extends Baza {
 
     public void setIdT(int idT) {
         try {
+            czyDodatnia(idT);
             resultSet=s.executeQuery("select tytuł,imie,nazwisko,autor.id as idA from tytuł left join autor on autor.id=idAutor where tytuł.id="+idT);
             if(resultSet.next()){
                 idA=resultSet.getInt("idA");

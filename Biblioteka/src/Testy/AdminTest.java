@@ -19,15 +19,20 @@ public class AdminTest {
 
     @org.junit.Test
     public void odsetki() {
-        new Admin("root","root").odsetki(1,1);
+       try {
+           new Admin("root","root").odsetki(1,1);
+       }catch(Exception e){
+           e.printStackTrace();
+           Assert.fail();
+       }
     }
 
     @org.junit.Test
     public void zmianaStanuKsiazki() {
-        Admin test=new Admin("root","root");
+
         Statement s1,s2;
         ResultSet r1,r2;
-        try {
+        try {Admin test=new Admin("root","root");
             Connection c= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
             s1=c.createStatement();
             s2=c.createStatement();
@@ -46,69 +51,124 @@ public class AdminTest {
 
     @org.junit.Test
     public void CSV() throws IOException {
+        try {
+
+
         Admin test=new Admin("root","root");
         Path p=Paths.get("C:\\Users\\HP\\Documents\\Projekt biblioteka\\Projekt-biblioteka\\Biblioteka\\src\\Testy");
         test.zapiszDoCSV(test.inwentarz(),p.resolve("testDoCSV1.csv"));
         test.dodajZCSV(p.resolve("testZCSV.csv"));
         test.zapiszDoCSV(test.inwentarz(),p.resolve("testDoCSV2.csv"));
         Assert.assertNotEquals(Files.mismatch(p.resolve("testDoCSV1.csv"),p.resolve("testDoCSV2.csv")),-1);
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
     }
 
     @org.junit.Test
     public void czyNowyAutor() {
-        Admin test=new Admin("root","root");
-        Assert.assertTrue(test.czyNowyAutor("drgdrahh","sigsyuigisegfb"));
-        Assert.assertFalse(test.czyNowyAutor("Henryk","Sienkiewicz"));
+        try {
+            Admin test=new Admin("root","root");
+            Assert.assertTrue(test.czyNowyAutor("drgdrahh","sigsyuigisegfb"));
+            Assert.assertFalse(test.czyNowyAutor("Henryk","Sienkiewicz"));
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void czyNowyTytul() {
-        Admin test=new Admin("root","root");
-        Assert.assertTrue(test.czyNowyTytul("drgdrahh",0));
-        Assert.assertFalse(test.czyNowyTytul("Potop",5));
+        try {
+            Admin test=new Admin("root","root");
+            Assert.assertTrue(test.czyNowyTytul("drgdrahh",0));
+            Assert.assertFalse(test.czyNowyTytul("Potop",5));
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void dodajAutor() {
-        Admin test=new Admin("root","root");
-        Assert.assertNotEquals(test.dodajAutor("Feliks","Koneczny"),0);
+        try {
+            Admin test=new Admin("root","root");
+            Assert.assertNotEquals(test.dodajAutor("Feliks","Koneczny"),0);
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void dodajTytul() {
-        Admin test=new Admin("root","root");
-        Assert.assertNotEquals(test.dodajTytul("Polskie logos a ethos",8),0);
+        try {
+            Admin test=new Admin("root","root");
+            Assert.assertNotEquals(test.dodajTytul("Polskie logos a ethos",8),0);
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void dodajKsiazke() {
-        Admin test=new Admin("root","root");
-        Assert.assertNotEquals(test.dodajKsiazke(11),0);
+        try {
+            Admin test=new Admin("root","root");
+            Assert.assertNotEquals(test.dodajKsiazke(11),0);
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void dodajCzytelnika() {
-        Admin test=new Admin("root","root");
+        try {
+            Admin test=new Admin("root","root");
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void dodajIzakonczWyporzyczenie() {
-        Admin test=new Admin("root","root");
-        Assert.assertNotEquals(test.dodajWyporzyczenie(3,1),0);
-        test.zakonczWyporzyczenie(3,1);
+        try {
+            Admin test=new Admin("root","root");
+            Assert.assertNotEquals(test.dodajWyporzyczenie(3,1),0);
+            test.zakonczWyporzyczenie(3,1);
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void usun() {
-        Admin test=new Admin("root","root");
-        test.usun("książki", test.dodajKsiazke(11));
+        try {
+            Admin test=new Admin("root","root");
+            test.usun("książki", test.dodajKsiazke(11));
+        }catch(Exception e){
+            e.printStackTrace();
+            Assert.fail();
+        }
+
     }
 
     @org.junit.Test
     public void wyniki() {
-        Admin test=new Admin("root","root");
 
-        try {
+
+        try {Admin test=new Admin("root","root");
             Connection c= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
             Autor test2=new Autor(c,"Henryk","Sienkiewicz");
             Assert.assertNotNull(test.inwentarz());

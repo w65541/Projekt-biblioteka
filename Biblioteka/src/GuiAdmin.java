@@ -59,11 +59,16 @@ public class GuiAdmin extends JFrame{
     DefaultTableModel data;
     Admin admin;
     int limit=14,kara=10;
-    public GuiAdmin(String u,String p) {
-        admin=new Admin(u,p);
+    public GuiAdmin(Admin a) {
+        try{
+            admin=a;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         this.setContentPane(this.jpanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Admin user: "+u);
+        this.setTitle("Admin user: "+a.getUsername());
         setSize(1000,500);
         //table1.setModel(data);
         final ResultSet[] r = new ResultSet[1];
@@ -250,22 +255,23 @@ public class GuiAdmin extends JFrame{
 
     public void wyswietl(ResultSet r){
         try {
-            ResultSetMetaData rsmd = r.getMetaData();
-            String[] row=new String[rsmd.getColumnCount()];
-            for (int i=1;i<rsmd.getColumnCount()+1;i++){
-                row[i-1]=rsmd.getColumnName(i);
-            }
-            String[][] column=new String[0][0];
-            data=new DefaultTableModel(column,row);
-            String[] roww=new String[rsmd.getColumnCount()];
-            while (r.next()){
-                for (int i=1;i<rsmd.getColumnCount()+1;i++){
-                    roww[i-1]=r.getString(i);
+            if(r!=null) {
+                ResultSetMetaData rsmd = r.getMetaData();
+                String[] row = new String[rsmd.getColumnCount()];
+                for (int i = 1; i < rsmd.getColumnCount() + 1; i++) {
+                    row[i - 1] = rsmd.getColumnName(i);
                 }
-                data.addRow(roww);
-            }
-            table1.setModel(data);
-        }catch (Exception e){
+                String[][] column = new String[0][0];
+                data = new DefaultTableModel(column, row);
+                String[] roww = new String[rsmd.getColumnCount()];
+                while (r.next()) {
+                    for (int i = 1; i < rsmd.getColumnCount() + 1; i++) {
+                        roww[i - 1] = r.getString(i);
+                    }
+                    data.addRow(roww);
+                }
+                table1.setModel(data);
+            }}catch (Exception e){
             e.printStackTrace();
         }
 

@@ -18,12 +18,17 @@ public class GuiUser extends JFrame{
     private JButton historiaButton;
     User user;
     DefaultTableModel data;
-    public GuiUser(String u,String p) {
-        user=new User(u,p);
-        this.setTitle("User: "+u);
-        this.setContentPane(this.jpanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000,500);
+    public GuiUser(User u) {
+        try {
+            user=u;
+            this.setTitle("User: "+u.getUser().getUsername());
+            this.setContentPane(this.jpanel);
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setSize(1000,500);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        final ResultSet[] r = new ResultSet[1];
         wyszukajButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,6 +50,7 @@ public class GuiUser extends JFrame{
     }
     public void wyswietl(ResultSet r){
         try {
+            if(r!=null){
             ResultSetMetaData rsmd = r.getMetaData();
             String[] row=new String[rsmd.getColumnCount()];
             for (int i=1;i<rsmd.getColumnCount()+1;i++){
@@ -60,6 +66,7 @@ public class GuiUser extends JFrame{
                 data.addRow(roww);
             }
             table1.setModel(data);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

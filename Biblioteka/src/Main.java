@@ -42,9 +42,15 @@ public class Main {
                      username=in.next();
                      System.out.print("Password: ");
                      password=in.next();
-                     admin=new Admin(username,password);
-                     JFrame a = new GuiAdmin(username,password);
-                     a.setVisible(true);
+                     try {
+                         admin=new Admin(username,password);
+                         JFrame a = new GuiAdmin(admin);
+                         a.setVisible(true);
+                     }catch (SQLException e){
+                         System.out.println("Niepoprawny login lub hasło");
+                         return;
+                     }
+
                      break;
 
                  case 1:
@@ -52,9 +58,15 @@ public class Main {
                      username=in.next();
                      System.out.print("Password: ");
                      password=in.next();
-                     user=new User(username,password);
-                     JFrame b = new GuiUser(username,password);
-                     b.setVisible(true);
+                     try {
+                         user=new User(username,password);
+                         JFrame b = new GuiUser(user);
+                         b.setVisible(true);
+                     }catch (SQLException e){
+                         System.out.println("Niepoprawny login lub hasło");
+                         return;
+                     }
+
                      break;
                  case 9: return;
                  default:

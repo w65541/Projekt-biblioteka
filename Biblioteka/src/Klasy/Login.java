@@ -5,16 +5,17 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-public class Login {
+public class Login implements Walidacja{
     Connection c;
     Statement s;
     ResultSet r;
-    public Login(String username,String password) {
+    public Login(String username,String password) throws SQLException{
         try{
             this.c = DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka",username,password);
             s=c.createStatement();
         }catch (Exception e){
             e.printStackTrace();
+            throw new SQLException();
         }
     }
 
@@ -24,8 +25,9 @@ public class Login {
 
     //Zwraca ResulSet wyszukiwarki, można wstawić puste "" a i tak będzie działać
     public ResultSet wyszukaj(String tytul,String imie,String nazwisko){
-        if(!tytul.contains("czytelnik") || !imie.contains("czytelnik") || !nazwisko.contains("czytelnik")){
+
         try{
+            walidacjaSql(tytul);  walidacjaSql(imie);  walidacjaSql(nazwisko);
             String sql="SELECT Tytuł,Imie,Nazwisko,sum(czyWyporzyczona=0) as 'Dostępne' FROM książki left join tytuł \n" +
                     "on tytuł.id=książki.idTytuł  left join autor on autor.id=idAutor";
 
@@ -46,7 +48,7 @@ public class Login {
             return r;
         }catch (Exception e){
             e.printStackTrace();
-        }}
+        }
         return null;
     }
 

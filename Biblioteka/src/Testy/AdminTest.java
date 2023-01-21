@@ -2,9 +2,8 @@ package Testy;
 
 import Klasy.Admin;
 import Klasy.Autor;
+import Klasy.Tytul;
 import org.junit.Assert;
-
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +12,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static org.junit.Assert.*;
 
 public class AdminTest {
 
@@ -50,7 +48,7 @@ public class AdminTest {
 
 
     @org.junit.Test
-    public void CSV() throws IOException {
+    public void CSV() {
         try {
 
 
@@ -83,7 +81,7 @@ public class AdminTest {
     public void czyNowyTytul() {
         try {
             Admin test=new Admin("root","root");
-            Assert.assertTrue(test.czyNowyTytul("drgdrahh",0));
+            Assert.assertTrue(test.czyNowyTytul("drgdrahh",1));
             Assert.assertFalse(test.czyNowyTytul("Potop",5));
         }catch(Exception e){
             e.printStackTrace();
@@ -132,6 +130,8 @@ public class AdminTest {
     public void dodajCzytelnika() {
         try {
             Admin test=new Admin("root","root");
+            test.usun("czytelnik",test.dodajCzytelnika("testI","testN","test@test.pl","123456789","ulica miasto kod pocztowy","test","test"));
+
         }catch(Exception e){
             e.printStackTrace();
             Assert.fail();
@@ -169,8 +169,10 @@ public class AdminTest {
 
 
         try {Admin test=new Admin("root","root");
+            Tytul tytul=new Tytul(test.getC(),"Potop");
             Connection c= DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteka","root","root");
             Autor test2=new Autor(c,"Henryk","Sienkiewicz");
+            Assert.assertEquals(tytul.ileDostepnych(),2);
             Assert.assertNotNull(test.inwentarz());
             Assert.assertNotNull(test.wyszukaj("","",""));
             Assert.assertNotNull(test.aktualneWyporzyczenia());

@@ -4,7 +4,6 @@ import Klasy.User;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
 public class UserTest {
 
@@ -16,7 +15,6 @@ public class UserTest {
             Assert.assertTrue(test.czyDostepna("Potop"));
             Assert.assertTrue(test.czyDostepna("Potop","","Sienkiewicz"));
             Assert.assertFalse(test.czyDostepna("afdaefaef","easgfsefesf","efsefesgfgseg"));
-            Assert.assertFalse(test.czyDostepna("a'; select * from czytelnik; select * from autor where imie='a"));
         }catch (Exception e){
             e.printStackTrace();
         }

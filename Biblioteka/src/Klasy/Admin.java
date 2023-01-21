@@ -107,7 +107,7 @@ public class Admin extends Login {
             writer.close();
         }catch (Exception e){
             e.printStackTrace();
-        };
+        }
     }
 
     //Sprawdza czy dany autor istnieje w bazie danych
@@ -118,6 +118,7 @@ public class Admin extends Login {
             if(resultSet.next()) return false;
         }catch (Exception e){
             e.printStackTrace();
+            return false;
         }
         return true;
     }
@@ -129,6 +130,7 @@ public class Admin extends Login {
             if(resultSet.next()) return false;
         }catch (Exception e){
             e.printStackTrace();
+            return false;
         }
         return true;
     }
@@ -199,6 +201,8 @@ public class Admin extends Login {
     //Dodaje nowego czytelnika do bazy danych i tworzy też w niej urzytkownika nadając odpowiednie uprawnienia
     public int dodajCzytelnika(String imie,String nazwisko,String email,String telefon,String adres,String username,String haslo){
         try{
+            email=walidacjaEmail(email);
+            telefon=walidacjaTel(telefon);
             s.execute("CREATE USER '"+username+"'@'localhost' IDENTIFIED BY '"+haslo+"'");
             s.execute("GRANT SELECT ON biblioteka.* TO '"+username+"'@'localhost';");
             s.execute("FLUSH PRIVILEGES");
@@ -216,8 +220,7 @@ public class Admin extends Login {
                     "'"+telefon+"',\n" +
                     "'"+adres+"',\n" +
                     "'"+username+"');\n");
-            r=s.executeQuery("select id from czytelnik where " +
-                    "imie='"+imie+"' and nazwisko='"+nazwisko+"' and email='"+email+"' and telefon='"+telefon+"' and adres='"+adres+"' and username='"+username+"'");
+            r=s.executeQuery("select id from czytelnik where username='"+username+"'");
             r.next();
             return r.getInt("id");
         }catch (Exception e){
@@ -269,7 +272,11 @@ public class Admin extends Login {
     public void usun(String tabela,int id){
         try {
             czyDodatnia(id);
-            s.execute("DELETE FROM `biblioteka`.`"+tabela+"` WHERE id="+id);
+            if(tabela.equals("czytelnik")){
+                s.execute("DROP user "+new Czytelnik(getC(),id).getUsername()+"@localhost");
+            }
+            s.execute("DELETE FROM "+tabela+" WHERE id="+id);
+
 
         }catch (Exception e){
             e.printStackTrace();
@@ -295,8 +302,8 @@ public class Admin extends Login {
                 return r;
             }
             String[] sqll=sql.split(";");
-            for (int i=0;i<sqll.length;i++){
-             s.execute(sqll[i]);
+            for (String value : sqll) {
+                s.execute(value);
             }
             return null;
         }catch (Exception e){

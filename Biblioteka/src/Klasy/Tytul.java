@@ -59,10 +59,11 @@ public class Tytul extends Baza{
     //Sprawdza czy są dostępne książki tego tytułu do wyporzyczenia
     public boolean czyDostepna(){
         try {
-            resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getId()+" and idAutor="+getIdA()+" group by Tytuł");
+            resultSet=s.executeQuery("SELECT Tytuł,count(czyWyporzyczona) FROM tytuł left join książki on tytuł.id=książki.idTytuł where czyWyporzyczona=0 and idTytuł="+getId()+" group by Tytuł");
             if(resultSet.next()) return true;
         }catch(Exception e){
             e.printStackTrace();
+            return false;
         }
         return false;
     }
